@@ -1,5 +1,4 @@
 local vector = require "vector"
-local tick = require "tick"
 local Dot = require "dot"
 
 local fps
@@ -10,6 +9,7 @@ local sub_steps = 8
 local gravity = vector(0, 1000)
 local contraint_position = vector(window_width/2, window_height/2)
 local contraint_radius = window_height / 2 - 50
+local interval = 0
 
 local function applyGravity()
 	for i, dot in ipairs(dots) do
@@ -57,15 +57,15 @@ local function solveCollisions()
 end
 
 function love.load()
-    tick.recur(
-        function()
-			table.insert(dots, Dot(window_width/2 - 100, window_height/2))
-        end,
-    0.2)
 end
 
 function love.update(dt)
-    tick.update(dt)
+    interval = interval + dt;
+	if interval > 0.2 then
+		interval = 0
+		table.insert(dots, Dot(window_width/2 - 100, window_height/2))
+	end
+
     fps = math.floor(1 / dt + 0.5)
 
     local sub_step_dt = dt / sub_steps
